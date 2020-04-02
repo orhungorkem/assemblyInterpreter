@@ -287,6 +287,8 @@ void operate::writeWordSizeData(int index, unsigned short data){
  */
 int operate::redirect(int linenum, vector<string> line) {
 
+    lastExecuted=linenum;
+
     if(!line[1].compare("int")&&!line[2].compare("20h")){  //check exit condition
         return 0;
     }

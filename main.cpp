@@ -8,8 +8,8 @@
 
 using namespace std;
 
-void execute(int linenum,operate*o,vector<vector<string>>&tokens);
-void parse(ifstream& myfile,vector<vector<string>>&tokens,int numberoflines,operate*o,bool&valid);
+void execute(int linenum,operate*o,vector<vector<string>>&tokens,vector<pair<int,int>>realLines);
+void parse(ifstream& myfile,vector<vector<string>>&tokens,int numberoflines,vector<pair<int,int>>&realLines,operate*o,bool&valid);
 
 
 
@@ -19,6 +19,7 @@ int main (int argc, char* argv[]) {
     int numberoflines=0;  //keeps the number of non empty lines in input
     operate* o=new operate();  //operator object that contains necessary functions,memory,registers...
     vector<vector<string>>tokens;   //tokens[i] holds the tokens in ith line of input
+    vector<pair<int,int>>realLines;  //will hold the map from i in tokens to real line number
     ifstream myfile;
     myfile.open(argv[1]);
     if (!myfile) {
@@ -26,10 +27,10 @@ int main (int argc, char* argv[]) {
         return 1;
     }
     bool valid=true;  //boolean that keeps the validity of input
-    parse(myfile,tokens,numberoflines,o,valid);
+    parse(myfile,tokens,numberoflines,realLines,o,valid);
 
     if(valid) {
-      execute(2, o, tokens);  //start with second line,skipping code segment
+      execute(2, o, tokens,realLines);  //start with second line,skipping code segment
     }
 
 
@@ -45,13 +46,16 @@ int main (int argc, char* argv[]) {
  */
 
 
-void parse(ifstream& myfile,vector<vector<string>>&tokens,int numberoflines,operate*o,bool& valid){
+void parse(ifstream& myfile,vector<vector<string>>&tokens,int numberoflines,vector<pair<int,int>>&realLines,operate*o,bool& valid){
     string line;
 
     vector<string>line0;
     tokens.push_back(line0);   //empty zeroth line
     if(myfile.is_open()) {
         int i=1;
+        int k=1;
+        //tokens[i] will not really hold, ith line,it will hold ith nonempty line
+        //so we will have to map tokens[i] to its real line num to keep real line numbers
         while (getline(myfile, line)) {
 
             vector<string>v;
@@ -61,6 +65,9 @@ void parse(ifstream& myfile,vector<vector<string>>&tokens,int numberoflines,oper
             stringstream check1(line);
             string lexeme;
 
+
+
+            pair<int,int>linemap;
             while(getline(check1, lexeme, ' '))
             {
 
@@ -140,7 +147,15 @@ void parse(ifstream& myfile,vector<vector<string>>&tokens,int numberoflines,oper
             if(tokens[i].size()==1){  //ignore empty line
                 i--;
             }
+            else{   //for a nonempty line i, real linenumber is j
+                linemap.first=i;
+                linemap.second=k;
+                realLines.push_back(linemap);
+            }
             i++;
+            k++;
+
+
         }
         numberoflines=i-1;
 
@@ -192,10 +207,20 @@ void parse(ifstream& myfile,vector<vector<string>>&tokens,int numberoflines,oper
  * Simply takes the line number to be executed and calls redirect method that will parse the line token by token.
  */
 
-void execute(int linenum,operate*o,vector<vector<string>>&tokens){  //determines the line to be executed, calls redirect
+void execute(int linenum,operate*o,vector<vector<string>>&tokens,vector<pair<int,int>>realLines){  //determines the line to be executed, calls redirect
 
 
     if(linenum==0){   //when the code must finish depending on an error or normally ends, redirect method returns 0 as linenum and execution stops
+        if(o->lastExecuted!=o->endingline){
+            int last=0;
+            for(int i=0;i<realLines.size();i++){
+                if(realLines[i].first==o->lastExecuted){
+                    last=realLines[i].second;
+                    break;
+                }
+            }
+            cout<<endl<<"Line of error: "<<last;
+        }
         return;
     }
     if(linenum>=tokens.size()){   //if returned linenum is larger than the number of existing lines, ending becomes unexpected
@@ -203,7 +228,7 @@ void execute(int linenum,operate*o,vector<vector<string>>&tokens){  //determines
         return;
     }
     vector<string>v=tokens[linenum];  //redirect method just gets the tokens of current line for simplicity
-    execute(o->redirect(linenum, v), o, tokens);
+    execute(o->redirect(linenum, v), o, tokens,realLines);
 
 }
 

@@ -14,6 +14,7 @@ public:
     int endingline;  //holds the line of int 20h(defined in parse method)
     int memorycounter=0;   //holds the index for variables to be stored (updated in parse and assignvar methods)
     int accessPermit; //keeps the minimum index available that does not keep instructions
+    int lastExecuted;  //keeps the last line of execution in case of errors
 
     vector<pair<string,int>>labelLines; //keeps the labels' names and their line numbers(which will ease the jumps)
 
