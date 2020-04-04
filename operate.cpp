@@ -904,24 +904,25 @@ int operate::add(unsigned short*ar,unsigned short*dep,int linenum,bool bytes2,bo
 
 
     int num=add1+add2;   //the result
-    string nums=decToHex(num);
+
 
     if(bytes2){    //if arrival is 2 bytes
-
-        if(nums.size()>4) {  //do not get the most significant bit
-            nums = nums.substr(1, 5);
+        short fin;
+        if(num>65535) {
             cf=1;    //carry flag set
+            fin=num-65536;
         }
         else{
             cf=0;
+            fin=num;
         }
-        short fin=hexToDec(nums);
+        string nums=decToHex32(num);  //nums can be more then 4 hex digits
         zf=(fin==0); //zero flag set
         of=ofSet(add1,add2,fin,1,1);  //overflow flag set
         sf=sfSet(fin,1);   //sign flag set
         char fir=decToHex(add1)[3];  //auxiliary flag is determined by least significant digit in hex
         char sec=decToHex(add2)[3];
-        char res=nums[3];
+        char res=nums[7];
         af= res<fir&&res<sec;  //auxiliary flag set
 
         if(armemoryaccess){
@@ -933,6 +934,7 @@ int operate::add(unsigned short*ar,unsigned short*dep,int linenum,bool bytes2,bo
         }
     }
     else {
+        string nums=decToHex(num);
         cf=(nums[1]!='0');  //carry flag set
         nums=nums.substr(2,4);
         short fin=hexToDec(nums);

@@ -34,6 +34,7 @@ int main (int argc, char* argv[]) {
     }
 
 
+
     delete o;
     return 0;
 }
@@ -208,7 +209,6 @@ void parse(ifstream& myfile,vector<vector<string>>&tokens,int numberoflines,vect
  */
 
 void execute(int linenum,operate*o,vector<vector<string>>&tokens,vector<pair<int,int>>realLines){  //determines the line to be executed, calls redirect
-
 
     if(linenum==0){   //when the code must finish depending on an error or normally ends, redirect method returns 0 as linenum and execution stops
         if(o->lastExecuted!=o->endingline){
