@@ -1332,6 +1332,10 @@ int operate::pushpop(unsigned short*ar,int linenum,bool armemoryaccess, int opti
     }
     else{
         sp+=2;
+        if(sp==0){
+            cout<<"error";
+            return 0;
+        }
         int num=loadWordSizeData(sp);
         if(armemoryaccess){
             writeWordSizeData(getMemoryAddress(ar),num);
