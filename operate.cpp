@@ -1065,6 +1065,11 @@ int operate::mul(unsigned short* ar,int linenum,bool bytes2,bool armemoryaccess)
 int operate::div(unsigned short* ar,int linenum,bool bytes2,bool armemoryaccess){
 
     int num=(bytes2&&armemoryaccess)?loadWordSizeData(getMemoryAddress(ar)):*ar;
+    if(num==0){
+        cout<<"divide overflow";
+        return 0;
+    }
+
     if(bytes2){
         int big=65536*dx+ax;  //get dx:ax
         int quotient=big/num;
