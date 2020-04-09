@@ -1601,8 +1601,10 @@ unsigned short *operate::arriveptr(string& arrival, bool& a8, bool& f8, unsigned
                 }
             }
             else{       //  then immediate data must be given in brackets
-                if(arrival[arrival.size()-1]=='h') {//hexadecimal memory address
-                    arrival=arrival.substr(0,arrival.size()-1);  //exclude h
+                if(arrival[arrival.size()-1]=='h'||arrival[0]=='0') {//hexadecimal memory address
+                    if(arrival[arrival.size()-1]=='h') {
+                        arrival= arrival.substr(0, arrival.size() - 1);
+                    }
                     if(arrival[0]>57||arrival[0]<48){ //first char in hex must be a number digit (abch ->0abch)
                         cout<<"syntax error";
                         return nullptr;
@@ -1658,8 +1660,10 @@ unsigned short *operate::arriveptr(string& arrival, bool& a8, bool& f8, unsigned
             }
         }
         else{    //immidiate data without brackets
-            if(arrival[arrival.size()-1]=='h') {//hexadecimal memory address
-                arrival=arrival.substr(0,arrival.size()-1);
+            if(arrival[arrival.size()-1]=='h'||arrival[0]=='0') {//hexadecimal memory address
+                if(arrival[arrival.size()-1]=='h') {
+                    arrival= arrival.substr(0, arrival.size() - 1);
+                }
                 if(arrival[0]>57||arrival[0]<48){
                     cout<<"syntax error";
                     return nullptr;
@@ -1914,8 +1918,10 @@ unsigned short *operate::departptr(string departure,bool&a8, bool &d8, bool &f8,
             }
 
             else{
-                if(departure[departure.size()-1]=='h') {//hexadecimal memory address
-                    departure=departure.substr(0,departure.size()-1);
+                if(departure[departure.size()-1]=='h'||departure[0]=='0') {//hexadecimal memory address
+                    if(departure[departure.size()-1]=='h') {
+                        departure = departure.substr(0, departure.size() - 1);
+                    }
                     if(departure[0]>57||departure[0]<48){
                         cout<<"syntax error";
                         return nullptr;
@@ -1974,8 +1980,10 @@ unsigned short *operate::departptr(string departure,bool&a8, bool &d8, bool &f8,
             }
         }
         else{    //test immediate data
-            if(departure[departure.size()-1]=='h') {//hexadecimal memory address
-                departure=departure.substr(0,departure.size()-1);
+            if(departure[departure.size()-1]=='h'||departure[0]=='0') {//hexadecimal memory address
+                if(departure[departure.size()-1]=='h') {
+                    departure = departure.substr(0, departure.size() - 1);
+                }
                 if(departure[0]>57||departure[0]<48){
                     cout<<"syntax error";
                     return nullptr;
