@@ -194,6 +194,7 @@ void parse(ifstream& myfile,vector<vector<string>>&tokens,int numberoflines,vect
     }
     if(!ending){
         cout<<"no ending error";
+        valid=0;
         return;
     }
 
