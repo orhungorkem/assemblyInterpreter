@@ -59,6 +59,9 @@ void parse(ifstream& myfile,vector<vector<string>>&tokens,int numberoflines,vect
         //so we will have to map tokens[i] to its real line num to keep real line numbers
         while (getline(myfile, line)) {
 
+            if (line[line.size() - 1] == '\r') {
+                line.erase(line.size() - 1);
+            }
             vector<string>v;
             string lex0="-";  //fill zeroth indexes with -
             v.push_back(lex0);
